@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  namespace: jellyfin
+  labels:
+    app: radarr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+      - name: radarr
+        image: linuxserver/radarr:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 7878
+          protocol: TCP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "UTC"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: d-movies
+          mountPath: /movies/D
+        - name: e-movies
+          mountPath: /movies/E
+        - name: f-movies
+          mountPath: /movies/F
+        - name: downloads
+          mountPath: /downloads
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: radarr-config
+      - name: d-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-d-movies
+      - name: e-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-e-movies
+      - name: f-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-f-movies
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: radarr-downloads

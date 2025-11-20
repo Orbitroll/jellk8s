@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+  labels:
+    app: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8096
+    targetPort: 8096
+    protocol: TCP
+  - name: https
+    port: 8920
+    targetPort: 8920
+    protocol: TCP
+  selector:
+    app: jellyfin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaresolverr
+  namespace: jellyfin
+  labels:
+    app: flaresolverr
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8191
+    targetPort: 8191
+    protocol: TCP
+  - name: http2
+    port: 8192
+    targetPort: 8192
+    protocol: TCP
+  selector:
+    app: flaresolverr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jackett
+  namespace: jellyfin
+  labels:
+    app: jackett
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 9117
+    targetPort: 9117
+    protocol: TCP
+  selector:
+    app: jackett

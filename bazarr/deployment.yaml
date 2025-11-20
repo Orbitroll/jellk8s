@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazarr
+  namespace: jellyfin
+  labels:
+    app: bazarr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: bazarr
+  template:
+    metadata:
+      labels:
+        app: bazarr
+    spec:
+      containers:
+      - name: bazarr
+        image: linuxserver/bazarr:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 6767
+          protocol: TCP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "UTC"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: d-movies
+          mountPath: /movies/D
+        - name: e-movies
+          mountPath: /movies/E
+        - name: f-movies
+          mountPath: /movies/F
+        - name: d-tvshows
+          mountPath: /tv/D
+        - name: e-tvshows
+          mountPath: /tv/E
+        - name: f-tvshows
+          mountPath: /tv/F
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: bazarr-config
+      - name: d-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-d-movies
+      - name: e-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-e-movies
+      - name: f-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-f-movies
+      - name: d-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-d-tvshows
+      - name: e-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-e-tvshows
+      - name: f-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-f-tvshows

@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+  labels:
+    app: jellyfin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+      - name: jellyfin
+        image: jellyfin/jellyfin:preview
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8096
+          protocol: TCP
+        - name: https
+          containerPort: 8920
+          protocol: TCP
+        - name: discovery
+          containerPort: 7359
+          protocol: UDP
+        - name: dlna
+          containerPort: 1900
+          protocol: UDP
+        env:
+        - name: TZ
+          value: "UTC"
+        - name: JELLYFIN_PublishedServerUrl
+          value: "http://localhost:8096"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: cache
+          mountPath: /cache
+        - name: d-movies
+          mountPath: /media/D/Movies
+        - name: d-tvshows
+          mountPath: /media/D/Tv Shows
+        - name: d-hebdub
+          mountPath: /media/D/heb-dub
+        - name: e-movies
+          mountPath: /media/E/Movies
+        - name: e-tvshows
+          mountPath: /media/E/Tv Shows
+        - name: e-hebdub
+          mountPath: /media/E/heb-dub
+        - name: f-movies
+          mountPath: /media/F/Movies
+        - name: f-tvshows
+          mountPath: /media/F/Tv Shows
+        - name: f-hebdub
+          mountPath: /media/F/heb-dub
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: jellyfin-config
+      - name: cache
+        persistentVolumeClaim:
+          claimName: jellyfin-cache
+      - name: d-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-d-movies
+      - name: d-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-d-tvshows
+      - name: d-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-d-hebdub
+      - name: e-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-e-movies
+      - name: e-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-e-tvshows
+      - name: e-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-e-hebdub
+      - name: f-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-f-movies
+      - name: f-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-f-tvshows
+      - name: f-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-f-hebdub

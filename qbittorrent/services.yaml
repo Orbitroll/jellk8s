@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: jellyfin
+  labels:
+    app: qbittorrent
+spec:
+  type: LoadBalancer
+  ports:
+  - name: webui
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+  - name: torrent-tcp
+    port: 6881
+    targetPort: 6881
+    protocol: TCP
+  - name: torrent-udp
+    port: 6881
+    targetPort: 6881
+    protocol: UDP
+  selector:
+    app: qbittorrent

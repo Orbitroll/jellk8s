@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaresolverr
+  namespace: jellyfin
+  labels:
+    app: flaresolverr
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8191
+    targetPort: 8191
+    protocol: TCP
+  - name: http2
+    port: 8192
+    targetPort: 8192
+    protocol: TCP
+  selector:
+    app: flaresolverr

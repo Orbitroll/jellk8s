@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: jellyfin
+  labels:
+    app: sonarr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: linuxserver/sonarr:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8989
+          protocol: TCP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "UTC"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: d-tvshows
+          mountPath: /tv/D/Tv Shows
+        - name: e-tvshows
+          mountPath: /tv/E/Tv Shows
+        - name: f-tvshows
+          mountPath: /tv/F/Tv Shows
+        - name: d-hebdub
+          mountPath: /tv/D/heb-dub
+        - name: e-hebdub
+          mountPath: /tv/E/heb-dub
+        - name: f-hebdub
+          mountPath: /tv/F/heb-dub
+        - name: downloads
+          mountPath: /downloads
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: sonarr-config
+      - name: d-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-d-tvshows
+      - name: e-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-e-tvshows
+      - name: f-tvshows
+        persistentVolumeClaim:
+          claimName: jellyfin-f-tvshows
+      - name: d-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-d-hebdub
+      - name: e-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-e-hebdub
+      - name: f-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-f-hebdub
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: qbittorrent-downloads
