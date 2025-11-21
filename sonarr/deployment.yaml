@@ -17,6 +17,10 @@ spec:
       labels:
         app: sonarr
     spec:
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
       containers:
       - name: sonarr
         image: linuxserver/sonarr:latest

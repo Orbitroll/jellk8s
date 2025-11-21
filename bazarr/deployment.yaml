@@ -17,6 +17,10 @@ spec:
       labels:
         app: bazarr
     spec:
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
       containers:
       - name: bazarr
         image: linuxserver/bazarr:latest
@@ -36,17 +40,23 @@ spec:
         - name: config
           mountPath: /config
         - name: d-movies
-          mountPath: /movies/D
+          mountPath: /movies/D/Movies
         - name: e-movies
-          mountPath: /movies/E
+          mountPath: /movies/E/Movies
         - name: f-movies
-          mountPath: /movies/F
+          mountPath: /movies/F/Movies
         - name: d-tvshows
-          mountPath: /tv/D
+          mountPath: /tv/D/Tv Shows
         - name: e-tvshows
-          mountPath: /tv/E
+          mountPath: /tv/E/Tv Shows
         - name: f-tvshows
-          mountPath: /tv/F
+          mountPath: /tv/F/Tv Shows
+        - name: d-hebdub
+          mountPath: /tv/D/heb-dub
+        - name: e-hebdub
+          mountPath: /tv/E/heb-dub
+        - name: f-hebdub
+          mountPath: /tv/F/heb-dub
         resources:
           requests:
             memory: "256Mi"
@@ -76,3 +86,12 @@ spec:
       - name: f-tvshows
         persistentVolumeClaim:
           claimName: jellyfin-f-tvshows
+      - name: d-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-d-hebdub
+      - name: e-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-e-hebdub
+      - name: f-hebdub
+        persistentVolumeClaim:
+          claimName: jellyfin-f-hebdub
