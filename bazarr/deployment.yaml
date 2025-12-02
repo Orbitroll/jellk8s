@@ -31,20 +31,20 @@ spec:
           protocol: TCP
         env:
         - name: PUID
-          value: "1000"
+          value: "0"
         - name: PGID
-          value: "1000"
+          value: "0"
         - name: TZ
           value: "UTC"
         volumeMounts:
         - name: config
           mountPath: /config
         - name: d-movies
-          mountPath: /movies/D/Movies
+          mountPath: /movies/D
         - name: e-movies
-          mountPath: /movies/E/Movies
+          mountPath: /movies/E
         - name: f-movies
-          mountPath: /movies/F/Movies
+          mountPath: /movies/F
         - name: d-tvshows
           mountPath: /tv/D/Tv Shows
         - name: e-tvshows
