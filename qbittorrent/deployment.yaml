@@ -20,7 +20,7 @@ spec:
       containers:
       - name: qbittorrent
         image: linuxserver/qbittorrent:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - name: webui
           containerPort: 8080
